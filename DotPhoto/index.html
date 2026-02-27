@@ -1,0 +1,1366 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dot Photo Studio</title>
+  <style>
+    :root {
+      --bg: #f4efe8;
+      --panel: #fff8ee;
+      --text: #2a1f14;
+      --muted: #695038;
+      --line: #decdb8;
+      --accent: #d86f1a;
+      --accent-2: #ffb366;
+      --accent-3: #138f8a;
+      --canvas: #11161d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "SUIT", "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 500px at -20% -10%, #ffe6c3 0%, transparent 55%),
+        radial-gradient(800px 400px at 120% 110%, #c9f0e9 0%, transparent 60%),
+        var(--bg);
+      padding: 20px;
+    }
+
+    .shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      background: linear-gradient(160deg, #fff7ea, #fff1e0);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 10px 28px rgba(68, 38, 7, 0.08);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.4rem, 2.5vw, 2.1rem);
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 14px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 24px rgba(55, 30, 4, 0.06);
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+
+    .dropzone {
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      gap: 6px;
+      width: 100%;
+      min-height: 132px;
+      border: 2px dashed #d9b992;
+      border-radius: 14px;
+      padding: 18px 14px;
+      text-align: center;
+      background: #fff;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    .dropzone.dragging {
+      border-color: var(--accent);
+      background: #fff3e6;
+      transform: translateY(-1px);
+    }
+
+    .dropzone .dropzone-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #9a520e;
+      background: #ffe9d2;
+      border: 1px solid #f3cba5;
+      line-height: 1;
+    }
+
+    .dropzone strong {
+      color: #6f4010;
+      display: block;
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    .dropzone span {
+      color: #7d6043;
+      font-size: 0.88rem;
+      line-height: 1.3;
+    }
+
+    .dropzone .dropzone-help {
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: #fff4e6;
+      border: 1px solid #f0d6b6;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .controls {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+      color: #5d452e;
+      font-weight: 600;
+    }
+
+    .value-tag {
+      display: inline-block;
+      min-width: 58px;
+      text-align: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #fff0dc;
+      color: #8f4a0a;
+      font-weight: 700;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    select {
+      width: 100%;
+      border: 1px solid #d6bfa3;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 0.93rem;
+    }
+
+    .label-inline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      position: relative;
+    }
+
+    .label-inline label {
+      margin: 0;
+      font-size: 0.88rem;
+      color: #5d452e;
+      font-weight: 600;
+    }
+
+    .info-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .info-btn {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 1px solid #caa57f;
+      background: #fff4e7;
+      color: #7f4a13;
+      font-size: 0.72rem;
+      font-weight: 800;
+      line-height: 1;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .info-tooltip {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      width: min(320px, calc(100vw - 70px));
+      z-index: 20;
+      background: #fff9f1;
+      border: 1px solid #d9b992;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(58, 35, 12, 0.12);
+      padding: 9px 10px;
+      font-size: 0.79rem;
+      line-height: 1.4;
+      color: #5f4428;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(4px);
+      transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+    }
+
+    .info-wrap:hover .info-tooltip,
+    .info-wrap:focus-within .info-tooltip,
+    .info-wrap.open .info-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.86rem;
+      color: #5d452e;
+      padding: 9px 10px;
+      border: 1px solid #dcc8b0;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .toggle-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.02);
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+    }
+
+    .secondary {
+      background: linear-gradient(135deg, #1f8a84, #56c6bf);
+      color: #fff;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      filter: none;
+    }
+
+    .status {
+      margin-top: 10px;
+      min-height: 20px;
+      font-size: 0.88rem;
+      color: #6b4f33;
+    }
+
+    .result-card {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 560px;
+    }
+
+    .result-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .result-head p {
+      margin: 0;
+      color: #6d5339;
+      font-size: 0.88rem;
+    }
+
+    .canvas-wrap {
+      border: 1px solid #2b3340;
+      background:
+        linear-gradient(45deg, #19212a 25%, #1f2933 25%, #1f2933 50%, #19212a 50%, #19212a 75%, #1f2933 75%, #1f2933 100%);
+      background-size: 20px 20px;
+      border-radius: 14px;
+      padding: 12px;
+      overflow: auto;
+      display: grid;
+      place-items: center;
+    }
+
+    .canvas-stage {
+      position: relative;
+      display: inline-grid;
+      overflow: hidden;
+      border-radius: 6px;
+    }
+
+    .compare-panel {
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      border: 1px solid #e4d3bd;
+      border-radius: 10px;
+      background: #fffaf2;
+    }
+
+    .compare-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 0.84rem;
+      color: #664a2f;
+      font-weight: 600;
+    }
+
+    .compare-row .value-tag {
+      min-width: 62px;
+      padding: 1px 8px;
+      font-size: 0.78rem;
+    }
+
+    .compare-divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+      pointer-events: none;
+      transform: translateX(-1px);
+      z-index: 5;
+    }
+
+    .compare-divider::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 2px solid #111;
+      transform: translate(-50%, -50%);
+    }
+
+    .compare-tag {
+      position: absolute;
+      top: 8px;
+      z-index: 6;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 6px;
+      border-radius: 999px;
+      letter-spacing: 0.02em;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .compare-tag.before {
+      left: 8px;
+      background: rgba(17, 17, 17, 0.65);
+      color: #fff;
+    }
+
+    .compare-tag.after {
+      right: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      color: #1c1c1c;
+      border: 1px solid rgba(0, 0, 0, 0.22);
+    }
+
+    canvas {
+      max-width: 100%;
+      height: auto;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      border-radius: 6px;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+      background: var(--canvas);
+      cursor: crosshair;
+    }
+
+    .canvas-stage canvas {
+      grid-area: 1 / 1;
+    }
+
+    #selectionCanvas {
+      background: transparent;
+      box-shadow: none;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    .meta {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: #806145;
+    }
+
+    .palette {
+      margin-top: 12px;
+      border: 1px solid #e4d3bd;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .palette-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .palette-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .palette-head strong {
+      font-size: 0.9rem;
+      color: #5f4429;
+    }
+
+    .palette-head span {
+      font-size: 0.82rem;
+      color: #826142;
+    }
+
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(116px, 1fr));
+      gap: 8px;
+      max-height: 190px;
+      overflow: auto;
+      padding-right: 3px;
+    }
+
+    .swatch-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 36px;
+      border: 1px solid #eadbca;
+      border-radius: 10px;
+      padding: 6px 8px;
+      background: #fffaf4;
+      transition: 0.15s ease;
+      cursor: pointer;
+    }
+
+    .swatch-item:hover {
+      border-color: #dfc5a6;
+      background: #fff4e8;
+    }
+
+    .swatch-item.active {
+      border-color: #d86f1a;
+      background: #fff0de;
+      box-shadow: 0 0 0 2px rgba(216, 111, 26, 0.18);
+    }
+
+    .swatch-color {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+      flex: 0 0 auto;
+    }
+
+    .swatch-code {
+      font-size: 0.82rem;
+      color: #5e462c;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .palette-empty {
+      font-size: 0.84rem;
+      color: #7a5a3c;
+      padding: 4px 2px;
+    }
+
+    @media (max-width: 920px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .result-card {
+        min-height: 460px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <h1>Dot Photo Studio</h1>
+      <p>사진을 올리면 브라우저에서 바로 도트 이미지로 변환합니다. 서버 업로드 없이 로컬에서 처리됩니다.</p>
+    </section>
+
+    <section class="grid">
+      <aside class="panel">
+        <h2>변환 설정</h2>
+
+        <label class="dropzone" id="dropzone" for="fileInput">
+          <span class="dropzone-icon" aria-hidden="true">+</span>
+          <strong>사진 파일 선택 또는 드래그</strong>
+          <span class="dropzone-help">JPG, PNG, WEBP 지원</span>
+        </label>
+        <input id="fileInput" type="file" accept="image/*" />
+
+        <div class="controls">
+          <div class="field">
+            <label for="dotSize">
+              도트 크기
+              <span class="value-tag" id="dotSizeValue">10px</span>
+            </label>
+            <input id="dotSize" type="range" min="1" max="30" step="1" value="10" />
+          </div>
+
+          <div class="field">
+            <label for="colorLevels">
+              색상 단계
+              <span class="value-tag" id="colorLevelsValue">6단계</span>
+            </label>
+            <input id="colorLevels" type="range" min="2" max="16" step="1" value="6" />
+          </div>
+
+          <div class="field">
+            <label for="outputWidth">
+              출력 폭
+              <span class="value-tag" id="outputWidthValue">720px</span>
+            </label>
+            <input id="outputWidth" type="range" min="320" max="1400" step="20" value="720" />
+          </div>
+
+          <div class="field">
+            <label for="dotShape">도트 모양</label>
+            <select id="dotShape">
+              <option value="circle">원형 도트</option>
+              <option value="square" selected>사각 도트</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <div class="label-inline">
+              <label for="ditherMode">디더링</label>
+              <span class="info-wrap" id="ditherInfoWrap">
+                <button class="info-btn" type="button" id="ditherInfoBtn" aria-label="디더링 옵션 설명 보기" aria-expanded="false">i</button>
+                <span class="info-tooltip" role="tooltip">
+                  없음: 가장 빠르지만 계단 현상이 있을 수 있습니다.<br />
+                  Ordered: 속도와 품질의 균형이 좋습니다.<br />
+                  Floyd-Steinberg: 가장 자연스럽지만 변환이 느릴 수 있습니다.
+                </span>
+              </span>
+            </div>
+            <select id="ditherMode">
+              <option value="none" selected>없음 (빠름)</option>
+              <option value="ordered">Ordered (균형)</option>
+              <option value="floyd">Floyd-Steinberg (고품질)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="fastModeToggle">고속 모드</label>
+            <label class="toggle-row" for="fastModeToggle">
+              <input id="fastModeToggle" type="checkbox" checked />
+              <span>저픽셀(1~2px)에서 자동 최적화</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="row">
+          <button class="primary" id="convertButton" type="button" disabled>도트 변환</button>
+          <button class="secondary" id="downloadButton" type="button" disabled>PNG 다운로드</button>
+        </div>
+
+        <div class="status" id="statusText">이미지를 먼저 선택해 주세요.</div>
+      </aside>
+
+      <section class="panel result-card">
+        <div>
+          <div class="result-head">
+            <h2>결과 미리보기</h2>
+            <p id="dotInfo">-</p>
+          </div>
+          <div class="compare-panel">
+            <div class="compare-row">
+              <span>Before / After 비교</span>
+              <span class="value-tag" id="compareValue">100%</span>
+            </div>
+            <input id="compareSlider" type="range" min="0" max="100" step="1" value="100" />
+          </div>
+        </div>
+        <div class="canvas-wrap">
+          <div class="canvas-stage">
+            <canvas id="originalCanvas" width="720" height="480"></canvas>
+            <canvas id="resultCanvas" width="720" height="480"></canvas>
+            <canvas id="selectionCanvas" width="720" height="480"></canvas>
+            <div class="compare-divider" id="compareDivider"></div>
+            <div class="compare-tag before">원본</div>
+            <div class="compare-tag after">도트</div>
+          </div>
+        </div>
+        <div class="palette">
+          <div class="palette-head">
+            <strong>도트 색상 코드</strong>
+            <div class="palette-meta">
+              <span id="pickedColor">선택: -</span>
+              <span id="paletteCount">0 colors</span>
+            </div>
+          </div>
+          <div class="palette-grid" id="paletteGrid">
+            <div class="palette-empty">변환하면 색상 코드가 표시됩니다.</div>
+          </div>
+        </div>
+        <div class="meta">팁: 비교 슬라이더로 원본/도트를 나눠보고, 도트를 클릭하면 해당 색상이 팔레트에서 하이라이트됩니다.</div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const fileInput = document.getElementById("fileInput");
+    const dropzone = document.getElementById("dropzone");
+    const convertButton = document.getElementById("convertButton");
+    const downloadButton = document.getElementById("downloadButton");
+    const statusText = document.getElementById("statusText");
+    const dotInfo = document.getElementById("dotInfo");
+    const paletteGrid = document.getElementById("paletteGrid");
+    const paletteCount = document.getElementById("paletteCount");
+    const pickedColor = document.getElementById("pickedColor");
+
+    const dotSize = document.getElementById("dotSize");
+    const colorLevels = document.getElementById("colorLevels");
+    const outputWidth = document.getElementById("outputWidth");
+    const dotShape = document.getElementById("dotShape");
+    const ditherMode = document.getElementById("ditherMode");
+    const ditherInfoWrap = document.getElementById("ditherInfoWrap");
+    const ditherInfoBtn = document.getElementById("ditherInfoBtn");
+    const fastModeToggle = document.getElementById("fastModeToggle");
+    const compareSlider = document.getElementById("compareSlider");
+    const compareValue = document.getElementById("compareValue");
+    const compareDivider = document.getElementById("compareDivider");
+
+    const dotSizeValue = document.getElementById("dotSizeValue");
+    const colorLevelsValue = document.getElementById("colorLevelsValue");
+    const outputWidthValue = document.getElementById("outputWidthValue");
+
+    const originalCanvas = document.getElementById("originalCanvas");
+    const originalCtx = originalCanvas.getContext("2d");
+    const resultCanvas = document.getElementById("resultCanvas");
+    const resultCtx = resultCanvas.getContext("2d");
+    const selectionCanvas = document.getElementById("selectionCanvas");
+    const selectionCtx = selectionCanvas.getContext("2d");
+    const sampleCanvas = document.createElement("canvas");
+    const sampleCtx = sampleCanvas.getContext("2d", { willReadFrequently: true });
+
+    const state = {
+      image: null,
+      fileName: "dot-photo",
+      dotHexGrid: [],
+      dotCols: 0,
+      dotRows: 0,
+      dotCellSize: 0,
+      dotShape: "square",
+      dotRadius: 0,
+      selectedDot: null,
+      renderTimer: null,
+    };
+
+    function rgbToHex(r, g, b) {
+      return `#${[r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")}`.toUpperCase();
+    }
+
+    function hexToRgb(hex) {
+      const value = hex.replace("#", "");
+      if (value.length !== 6) return null;
+      return {
+        r: Number.parseInt(value.slice(0, 2), 16),
+        g: Number.parseInt(value.slice(2, 4), 16),
+        b: Number.parseInt(value.slice(4, 6), 16),
+      };
+    }
+
+    function getMarkerColorForHex(hex) {
+      const rgb = hexToRgb(hex);
+      if (!rgb) return "#FFFFFF";
+      const luminance = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+      return luminance >= 160 ? "#111111" : "#FFFFFF";
+    }
+
+    function clearActiveSwatches() {
+      paletteGrid.querySelectorAll(".swatch-item.active").forEach((node) => {
+        node.classList.remove("active");
+      });
+    }
+
+    function selectPaletteByHex(hex, shouldScroll = true) {
+      clearActiveSwatches();
+      const target = paletteGrid.querySelector(`.swatch-item[data-hex="${hex}"]`);
+      if (target) {
+        target.classList.add("active");
+        if (shouldScroll) {
+          target.scrollIntoView({ block: "nearest", inline: "nearest" });
+        }
+      }
+      pickedColor.textContent = `선택: ${hex}`;
+    }
+
+    function renderPalette(colorsWithCount) {
+      paletteGrid.innerHTML = "";
+      pickedColor.textContent = "선택: -";
+
+      if (!colorsWithCount.length) {
+        const empty = document.createElement("div");
+        empty.className = "palette-empty";
+        empty.textContent = "감지된 색상이 없습니다.";
+        paletteGrid.appendChild(empty);
+        paletteCount.textContent = "0 colors";
+        return;
+      }
+
+      colorsWithCount.forEach(([hex]) => {
+        const item = document.createElement("div");
+        item.className = "swatch-item";
+        item.dataset.hex = hex;
+
+        const colorBlock = document.createElement("div");
+        colorBlock.className = "swatch-color";
+        colorBlock.style.backgroundColor = hex;
+        item.appendChild(colorBlock);
+
+        const code = document.createElement("div");
+        code.className = "swatch-code";
+        code.textContent = hex;
+        item.appendChild(code);
+
+        paletteGrid.appendChild(item);
+      });
+
+      paletteCount.textContent = `${colorsWithCount.length} colors`;
+    }
+
+    function updateControlLabels() {
+      dotSizeValue.textContent = `${dotSize.value}px`;
+      colorLevelsValue.textContent = `${colorLevels.value}단계`;
+      outputWidthValue.textContent = `${outputWidth.value}px`;
+    }
+
+    function setStatus(text) {
+      statusText.textContent = text;
+    }
+
+    function baseName(name) {
+      return name.replace(/\.[^.]+$/, "") || "dot-photo";
+    }
+
+    function quantizeChannel(value, levels) {
+      if (levels <= 1) return value;
+      const step = 255 / (levels - 1);
+      return Math.round(value / step) * step;
+    }
+
+    function getQuantizeLut(levels) {
+      const lut = new Uint8ClampedArray(256);
+      for (let i = 0; i < 256; i += 1) {
+        lut[i] = quantizeChannel(i, levels);
+      }
+      return lut;
+    }
+
+    function clampByte(value) {
+      if (value < 0) return 0;
+      if (value > 255) return 255;
+      return value;
+    }
+
+    function updateCompareMask() {
+      const percent = Number(compareSlider.value);
+      const rightInset = 100 - percent;
+      compareValue.textContent = `${percent}%`;
+      resultCanvas.style.clipPath = `inset(0 ${rightInset}% 0 0)`;
+      selectionCanvas.style.clipPath = `inset(0 ${rightInset}% 0 0)`;
+      compareDivider.style.left = `${percent}%`;
+    }
+
+    function quantizeImageData(data, width, height, levels, mode) {
+      const lut = getQuantizeLut(levels);
+
+      if (mode === "none") {
+        for (let i = 0; i < data.length; i += 4) {
+          if (data[i + 3] <= 8) continue;
+          data[i] = lut[data[i]];
+          data[i + 1] = lut[data[i + 1]];
+          data[i + 2] = lut[data[i + 2]];
+        }
+        return;
+      }
+
+      if (mode === "ordered") {
+        const bayer4 = [
+          [0, 8, 2, 10],
+          [12, 4, 14, 6],
+          [3, 11, 1, 9],
+          [15, 7, 13, 5],
+        ];
+        const step = levels <= 1 ? 255 : 255 / (levels - 1);
+        const scale = step * 0.55;
+
+        for (let y = 0; y < height; y += 1) {
+          for (let x = 0; x < width; x += 1) {
+            const idx = (y * width + x) * 4;
+            if (data[idx + 3] <= 8) continue;
+            const threshold = (bayer4[y & 3][x & 3] - 7.5) / 16;
+            const r = clampByte(Math.round(data[idx] + threshold * scale));
+            const g = clampByte(Math.round(data[idx + 1] + threshold * scale));
+            const b = clampByte(Math.round(data[idx + 2] + threshold * scale));
+            data[idx] = lut[r];
+            data[idx + 1] = lut[g];
+            data[idx + 2] = lut[b];
+          }
+        }
+        return;
+      }
+
+      // Floyd-Steinberg error diffusion
+      const size = width * height;
+      const rb = new Float32Array(size);
+      const gb = new Float32Array(size);
+      const bb = new Float32Array(size);
+      const ab = new Uint8ClampedArray(size);
+
+      for (let i = 0, p = 0; p < size; p += 1, i += 4) {
+        rb[p] = data[i];
+        gb[p] = data[i + 1];
+        bb[p] = data[i + 2];
+        ab[p] = data[i + 3];
+      }
+
+      const diffuse = (arr, index, err, weight) => {
+        arr[index] += err * weight;
+      };
+
+      for (let y = 0; y < height; y += 1) {
+        for (let x = 0; x < width; x += 1) {
+          const p = y * width + x;
+          if (ab[p] <= 8) continue;
+
+          const oldR = rb[p];
+          const oldG = gb[p];
+          const oldB = bb[p];
+
+          const newR = lut[clampByte(Math.round(oldR))];
+          const newG = lut[clampByte(Math.round(oldG))];
+          const newB = lut[clampByte(Math.round(oldB))];
+
+          rb[p] = newR;
+          gb[p] = newG;
+          bb[p] = newB;
+
+          const errR = oldR - newR;
+          const errG = oldG - newG;
+          const errB = oldB - newB;
+
+          if (x + 1 < width) {
+            const p1 = p + 1;
+            diffuse(rb, p1, errR, 7 / 16);
+            diffuse(gb, p1, errG, 7 / 16);
+            diffuse(bb, p1, errB, 7 / 16);
+          }
+          if (y + 1 < height) {
+            const pDown = p + width;
+            diffuse(rb, pDown, errR, 5 / 16);
+            diffuse(gb, pDown, errG, 5 / 16);
+            diffuse(bb, pDown, errB, 5 / 16);
+
+            if (x > 0) {
+              const pDownLeft = p + width - 1;
+              diffuse(rb, pDownLeft, errR, 3 / 16);
+              diffuse(gb, pDownLeft, errG, 3 / 16);
+              diffuse(bb, pDownLeft, errB, 3 / 16);
+            }
+            if (x + 1 < width) {
+              const pDownRight = p + width + 1;
+              diffuse(rb, pDownRight, errR, 1 / 16);
+              diffuse(gb, pDownRight, errG, 1 / 16);
+              diffuse(bb, pDownRight, errB, 1 / 16);
+            }
+          }
+        }
+      }
+
+      for (let i = 0, p = 0; p < size; p += 1, i += 4) {
+        data[i] = lut[clampByte(Math.round(rb[p]))];
+        data[i + 1] = lut[clampByte(Math.round(gb[p]))];
+        data[i + 2] = lut[clampByte(Math.round(bb[p]))];
+      }
+    }
+
+    function clearCanvasWithMessage(message) {
+      originalCanvas.width = 720;
+      originalCanvas.height = 480;
+      resultCanvas.width = 720;
+      resultCanvas.height = 480;
+      selectionCanvas.width = 720;
+      selectionCanvas.height = 480;
+
+      originalCtx.fillStyle = "#121923";
+      originalCtx.fillRect(0, 0, originalCanvas.width, originalCanvas.height);
+      resultCtx.fillStyle = "#121923";
+      resultCtx.fillRect(0, 0, resultCanvas.width, resultCanvas.height);
+      resultCtx.fillStyle = "#8aa2bc";
+      resultCtx.font = "600 20px SUIT, Pretendard, sans-serif";
+      resultCtx.textAlign = "center";
+      resultCtx.fillText(message, resultCanvas.width / 2, resultCanvas.height / 2);
+      updateCompareMask();
+      state.dotHexGrid = [];
+      state.dotCols = 0;
+      state.dotRows = 0;
+      state.dotCellSize = 0;
+      state.dotRadius = 0;
+      state.selectedDot = null;
+      renderPalette([]);
+    }
+
+    function drawSelectedDotMarker() {
+      selectionCanvas.width = resultCanvas.width;
+      selectionCanvas.height = resultCanvas.height;
+      selectionCtx.clearRect(0, 0, selectionCanvas.width, selectionCanvas.height);
+
+      if (!state.selectedDot || !state.dotCellSize) return;
+
+      const { col, row, hex } = state.selectedDot;
+      if (col < 0 || row < 0 || col >= state.dotCols || row >= state.dotRows) return;
+
+      const x = col * state.dotCellSize;
+      const y = row * state.dotCellSize;
+      const centerX = x + state.dotCellSize / 2;
+      const centerY = y + state.dotCellSize / 2;
+      const markerColor = getMarkerColorForHex(hex || "");
+      const haloColor = markerColor === "#FFFFFF" ? "rgba(0, 0, 0, 0.45)" : "rgba(255, 255, 255, 0.45)";
+
+      selectionCtx.save();
+      selectionCtx.lineJoin = "round";
+
+      if (state.dotShape === "circle") {
+        const ringRadius = Math.max(state.dotCellSize * 0.52, state.dotRadius + Math.max(0.5, state.dotCellSize * 0.12));
+        selectionCtx.strokeStyle = haloColor;
+        selectionCtx.lineWidth = Math.max(1, state.dotCellSize * 0.2);
+        selectionCtx.beginPath();
+        selectionCtx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
+        selectionCtx.stroke();
+
+        selectionCtx.strokeStyle = markerColor;
+        selectionCtx.lineWidth = Math.max(1, state.dotCellSize * 0.12);
+        selectionCtx.beginPath();
+        selectionCtx.arc(centerX, centerY, ringRadius, 0, Math.PI * 2);
+        selectionCtx.stroke();
+      } else {
+        const inset = state.dotCellSize <= 3 ? 0 : Math.max(0.5, state.dotCellSize * 0.08);
+        const size = Math.max(1, state.dotCellSize - inset * 2);
+
+        selectionCtx.strokeStyle = haloColor;
+        selectionCtx.lineWidth = Math.max(1, state.dotCellSize * 0.2);
+        selectionCtx.strokeRect(x + inset, y + inset, size, size);
+
+        selectionCtx.strokeStyle = markerColor;
+        selectionCtx.lineWidth = Math.max(1, state.dotCellSize * 0.12);
+        selectionCtx.strokeRect(x + inset, y + inset, size, size);
+      }
+
+      selectionCtx.restore();
+    }
+
+    function renderDotArt() {
+      if (!state.image) {
+        clearCanvasWithMessage("이미지를 선택해 주세요");
+        return;
+      }
+
+      const cellSize = Number(dotSize.value);
+      const levels = Number(colorLevels.value);
+      const requestedWidth = Number(outputWidth.value);
+      let targetWidth = requestedWidth;
+      const fastNotes = [];
+      const requestedDither = ditherMode.value;
+      let effectiveDither = requestedDither;
+
+      if (fastModeToggle.checked && cellSize <= 2) {
+        const widthCap = cellSize === 1 ? 900 : 1200;
+        if (targetWidth > widthCap) {
+          targetWidth = widthCap;
+          fastNotes.push(`출력 폭 ${widthCap}px로 제한`);
+        }
+      }
+
+      if (fastModeToggle.checked && cellSize <= 2 && requestedDither === "floyd") {
+        effectiveDither = "ordered";
+        fastNotes.push("디더링을 Ordered로 변경");
+      }
+
+      const ratio = state.image.height / state.image.width;
+      const targetHeight = Math.max(cellSize, Math.round(targetWidth * ratio));
+
+      const cols = Math.max(1, Math.floor(targetWidth / cellSize));
+      const rows = Math.max(1, Math.floor(targetHeight / cellSize));
+
+      sampleCanvas.width = cols;
+      sampleCanvas.height = rows;
+      sampleCtx.clearRect(0, 0, cols, rows);
+      sampleCtx.imageSmoothingEnabled = true;
+      sampleCtx.drawImage(state.image, 0, 0, cols, rows);
+
+      const imageData = sampleCtx.getImageData(0, 0, cols, rows);
+      const data = imageData.data;
+      const colorCounter = new Map();
+      const dotHexGrid = new Array(cols * rows).fill(null);
+      quantizeImageData(data, cols, rows, levels, effectiveDither);
+
+      for (let i = 0; i < data.length; i += 4) {
+        const gridIndex = i / 4;
+        if (data[i + 3] > 8) {
+          const hex = rgbToHex(data[i], data[i + 1], data[i + 2]);
+          dotHexGrid[gridIndex] = hex;
+          colorCounter.set(hex, (colorCounter.get(hex) || 0) + 1);
+        }
+      }
+
+      const sortedColors = [...colorCounter.entries()].sort((a, b) => b[1] - a[1]);
+      renderPalette(sortedColors);
+
+      resultCanvas.width = cols * cellSize;
+      resultCanvas.height = rows * cellSize;
+      originalCanvas.width = resultCanvas.width;
+      originalCanvas.height = resultCanvas.height;
+      selectionCanvas.width = resultCanvas.width;
+      selectionCanvas.height = resultCanvas.height;
+
+      originalCtx.clearRect(0, 0, originalCanvas.width, originalCanvas.height);
+      originalCtx.imageSmoothingEnabled = true;
+      originalCtx.drawImage(state.image, 0, 0, originalCanvas.width, originalCanvas.height);
+
+      resultCtx.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
+      resultCtx.fillStyle = "#101722";
+      resultCtx.fillRect(0, 0, resultCanvas.width, resultCanvas.height);
+      updateCompareMask();
+
+      const requestedShape = dotShape.value;
+      // 1~2px에서는 원형 도트가 거의 보이지 않으므로 사각 렌더링으로 자동 폴백.
+      const effectiveShape = requestedShape === "circle" && cellSize <= 2 ? "square" : requestedShape;
+
+      if (effectiveShape === "square") {
+        sampleCtx.putImageData(imageData, 0, 0);
+        resultCtx.imageSmoothingEnabled = false;
+        resultCtx.drawImage(sampleCanvas, 0, 0, cols, rows, 0, 0, resultCanvas.width, resultCanvas.height);
+      } else {
+        const radius = cellSize * 0.44;
+        for (let y = 0; y < rows; y += 1) {
+          for (let x = 0; x < cols; x += 1) {
+            const idx = (y * cols + x) * 4;
+            const alpha = data[idx + 3] / 255;
+            if (alpha < 0.05) continue;
+            resultCtx.fillStyle = `rgba(${data[idx]}, ${data[idx + 1]}, ${data[idx + 2]}, ${alpha.toFixed(3)})`;
+            resultCtx.beginPath();
+            resultCtx.arc(
+              x * cellSize + cellSize / 2,
+              y * cellSize + cellSize / 2,
+              radius,
+              0,
+              Math.PI * 2
+            );
+            resultCtx.fill();
+          }
+        }
+      }
+
+      state.dotHexGrid = dotHexGrid;
+      state.dotCols = cols;
+      state.dotRows = rows;
+      state.dotCellSize = cellSize;
+      state.dotShape = effectiveShape;
+      state.dotRadius = effectiveShape === "circle" ? cellSize * 0.44 : 0;
+
+      if (state.selectedDot) {
+        const { col, row } = state.selectedDot;
+        if (col >= 0 && row >= 0 && col < cols && row < rows) {
+          const selectedHex = state.dotHexGrid[row * cols + col];
+          if (selectedHex) {
+            state.selectedDot.hex = selectedHex;
+            selectPaletteByHex(selectedHex, false);
+          } else {
+            state.selectedDot = null;
+            pickedColor.textContent = "선택: -";
+          }
+        } else {
+          state.selectedDot = null;
+          pickedColor.textContent = "선택: -";
+        }
+      }
+
+      drawSelectedDotMarker();
+
+      dotInfo.textContent = `${cols} x ${rows} dots · ${effectiveDither} dither`;
+
+      const notices = [];
+      if (requestedShape === "circle" && effectiveShape === "square") {
+        notices.push("1~2px 원형은 사각 도트로 자동 변환");
+      }
+      if (fastNotes.length) {
+        notices.push(`고속 모드: ${fastNotes.join(", ")}`);
+      }
+      if (notices.length) {
+        setStatus(`도트 변환 완료 (${notices.join(" / ")})`);
+      } else {
+        setStatus("도트 변환이 완료되었습니다.");
+      }
+
+      downloadButton.disabled = false;
+    }
+
+    function scheduleRender(delayMs = 90) {
+      if (!state.image) return;
+      if (state.renderTimer) {
+        clearTimeout(state.renderTimer);
+      }
+      state.renderTimer = setTimeout(() => {
+        state.renderTimer = null;
+        renderDotArt();
+      }, delayMs);
+    }
+
+    function handleCanvasPick(event) {
+      if (!state.image || !state.dotHexGrid.length || !state.dotCellSize) return;
+
+      const rect = resultCanvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+
+      const visiblePercent = Number(compareSlider.value) / 100;
+      const relativePercent = (event.clientX - rect.left) / rect.width;
+      if (relativePercent > visiblePercent) {
+        setStatus("도트(After) 영역을 클릭해 주세요.");
+        return;
+      }
+
+      const px = (event.clientX - rect.left) * (resultCanvas.width / rect.width);
+      const py = (event.clientY - rect.top) * (resultCanvas.height / rect.height);
+
+      if (px < 0 || py < 0 || px >= resultCanvas.width || py >= resultCanvas.height) return;
+
+      const col = Math.floor(px / state.dotCellSize);
+      const row = Math.floor(py / state.dotCellSize);
+      if (col < 0 || row < 0 || col >= state.dotCols || row >= state.dotRows) return;
+
+      if (state.dotShape === "circle") {
+        const localX = px - col * state.dotCellSize;
+        const localY = py - row * state.dotCellSize;
+        const dx = localX - state.dotCellSize / 2;
+        const dy = localY - state.dotCellSize / 2;
+        if (Math.hypot(dx, dy) > state.dotRadius) {
+          setStatus("원형 도트 내부를 클릭해 주세요.");
+          return;
+        }
+      }
+
+      const hex = state.dotHexGrid[row * state.dotCols + col];
+      if (!hex) {
+        setStatus("해당 위치의 색상 정보를 찾을 수 없습니다.");
+        return;
+      }
+
+      state.selectedDot = { col, row, hex };
+      drawSelectedDotMarker();
+      selectPaletteByHex(hex);
+      setStatus(`선택된 도트 색상: ${hex}`);
+    }
+
+    function loadImage(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          state.image = img;
+          state.fileName = baseName(file.name);
+          convertButton.disabled = false;
+          setStatus(`${file.name} 로드 완료`);
+          renderDotArt();
+        };
+        img.onerror = () => {
+          setStatus("이미지를 읽을 수 없습니다. 다른 파일을 선택해 주세요.");
+        };
+        img.src = reader.result;
+      };
+      reader.onerror = () => {
+        setStatus("파일을 읽는 중 오류가 발생했습니다.");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleFileList(fileList) {
+      const [file] = fileList;
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        setStatus("이미지 파일만 업로드할 수 있습니다.");
+        return;
+      }
+      loadImage(file);
+    }
+
+    fileInput.addEventListener("change", (event) => {
+      handleFileList(event.target.files);
+    });
+
+    dropzone.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      dropzone.classList.add("dragging");
+    });
+
+    dropzone.addEventListener("dragleave", () => {
+      dropzone.classList.remove("dragging");
+    });
+
+    dropzone.addEventListener("drop", (event) => {
+      event.preventDefault();
+      dropzone.classList.remove("dragging");
+      handleFileList(event.dataTransfer.files);
+    });
+
+    resultCanvas.addEventListener("click", handleCanvasPick);
+
+    paletteGrid.addEventListener("click", (event) => {
+      const target = event.target.closest(".swatch-item");
+      if (!target) return;
+      const hex = target.dataset.hex;
+      if (!hex) return;
+      selectPaletteByHex(hex, false);
+      setStatus(`선택된 팔레트 색상: ${hex}`);
+    });
+
+    [dotSize, colorLevels, outputWidth, dotShape, ditherMode].forEach((control) => {
+      const rerender = () => {
+        updateControlLabels();
+        scheduleRender(100);
+      };
+      control.addEventListener("input", rerender);
+      control.addEventListener("change", rerender);
+    });
+
+    fastModeToggle.addEventListener("change", () => {
+      scheduleRender(50);
+    });
+
+    ditherInfoBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const isOpen = ditherInfoWrap.classList.toggle("open");
+      ditherInfoBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!ditherInfoWrap.contains(event.target)) {
+        ditherInfoWrap.classList.remove("open");
+        ditherInfoBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        ditherInfoWrap.classList.remove("open");
+        ditherInfoBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    compareSlider.addEventListener("input", () => {
+      updateCompareMask();
+    });
+
+    convertButton.addEventListener("click", () => {
+      renderDotArt();
+    });
+
+    downloadButton.addEventListener("click", () => {
+      const link = document.createElement("a");
+      link.href = resultCanvas.toDataURL("image/png");
+      link.download = `${state.fileName}-dot.png`;
+      link.click();
+    });
+
+    updateControlLabels();
+    updateCompareMask();
+    clearCanvasWithMessage("이미지를 선택하면 결과가 표시됩니다");
+  </script>
+</body>
+</html>
