@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>문의하기 | Dot Photo Studio</title>
+  <meta name="description" content="Dot Photo Studio 문의 채널" />
+  <link rel="stylesheet" href="info-pages.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html">Dot Photo Studio 홈</a>
+      <nav class="page-nav" aria-label="사이트 문서 링크">
+        <a href="about.html">서비스 소개</a>
+        <a href="privacy.html">개인정보처리방침</a>
+        <a href="terms.html">이용약관</a>
+        <a href="contact.html" aria-current="page">문의하기</a>
+        <a href="sitemap.html">사이트맵</a>
+      </nav>
+    </header>
+
+    <section class="card">
+      <h1>문의하기</h1>
+      <p class="subtitle">서비스 이용 중 문제나 제휴 문의가 있으면 아래 방법으로 연락해 주세요.</p>
+
+      <div class="section">
+        <h2>기본 문의 채널</h2>
+        <ul>
+          <li>이메일: <a class="link" href="mailto:bcm123412@gmail.com">bcm123412@gmail.com</a></li>
+          <li>응답 목표 시간: 영업일 기준 2~3일 이내</li>
+        </ul>
+        <div class="notice">
+          실제 운영 전, 이메일 주소를 본인 소유 도메인/메일 주소로 변경하세요.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>빠른 문의 작성</h2>
+        <form id="contactForm" class="form-grid">
+          <div class="form-field">
+            <label for="senderName">이름</label>
+            <input id="senderName" name="senderName" type="text" maxlength="40" placeholder="홍길동" />
+          </div>
+
+          <div class="form-field">
+            <label for="senderEmail">회신 이메일</label>
+            <input id="senderEmail" name="senderEmail" type="email" maxlength="120" placeholder="you@example.com" required />
+          </div>
+
+          <div class="form-field">
+            <label for="subject">제목</label>
+            <input id="subject" name="subject" type="text" maxlength="120" placeholder="문의 제목" required />
+          </div>
+
+          <div class="form-field">
+            <label for="message">문의 내용</label>
+            <textarea id="message" name="message" placeholder="내용을 입력하세요." required></textarea>
+          </div>
+
+          <button class="primary-btn" type="submit">이메일 앱으로 보내기</button>
+          <p class="form-status" id="formStatus">버튼을 누르면 기본 메일 앱이 열립니다.</p>
+        </form>
+      </div>
+
+      <div class="meta">
+        운영 및 정책 문의는 <a class="link" href="privacy.html">개인정보처리방침</a>, <a class="link" href="terms.html">이용약관</a>과 함께 검토해 주세요.
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      관련 문서: <a class="link" href="about.html">서비스 소개</a> · <a class="link" href="sitemap.html">사이트맵</a>
+    </footer>
+  </main>
+
+  <script>
+    const SUPPORT_EMAIL = "bcm123412@gmail.com";
+
+    const contactForm = document.getElementById("contactForm");
+    const formStatus = document.getElementById("formStatus");
+
+    contactForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const senderName = document.getElementById("senderName").value.trim();
+      const senderEmail = document.getElementById("senderEmail").value.trim();
+      const subject = document.getElementById("subject").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      if (!senderEmail || !subject || !message) {
+        formStatus.textContent = "회신 이메일, 제목, 문의 내용은 필수입니다.";
+        return;
+      }
+
+      const composedSubject = `[DotPhoto 문의] ${subject}`;
+      const bodyLines = [
+        `이름: ${senderName || "미입력"}`,
+        `회신 이메일: ${senderEmail}`,
+        "",
+        "문의 내용:",
+        message,
+      ];
+
+      const mailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(composedSubject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
+      window.location.href = mailto;
+      formStatus.textContent = "메일 앱을 열었습니다. 발송 전 내용 확인 후 전송해 주세요.";
+    });
+  </script>
+</body>
+</html>

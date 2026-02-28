@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | Dot Photo Studio</title>
+  <meta name="description" content="Dot Photo Studio contact channels" />
+  <link rel="stylesheet" href="info-pages.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="index.html?lang=en">Dot Photo Studio Home</a>
+      <nav class="page-nav" aria-label="site document links">
+        <a href="about-en.html">About</a>
+        <a href="privacy-en.html">Privacy Policy</a>
+        <a href="terms-en.html">Terms</a>
+        <a href="contact-en.html" aria-current="page">Contact</a>
+        <a href="sitemap-en.html">Sitemap</a>
+      </nav>
+    </header>
+
+    <section class="card">
+      <h1>Contact</h1>
+      <p class="subtitle">For issues, bug reports, or partnership inquiries, please use the channels below.</p>
+
+      <div class="section">
+        <h2>Primary Contact</h2>
+        <ul>
+          <li>Email: <a class="link" href="mailto:bcm123412@gmail.com">bcm123412@gmail.com</a></li>
+          <li>Response target: within 2-3 business days</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Quick Message Draft</h2>
+        <form id="contactForm" class="form-grid">
+          <div class="form-field">
+            <label for="senderName">Name</label>
+            <input id="senderName" name="senderName" type="text" maxlength="40" placeholder="Your name" />
+          </div>
+
+          <div class="form-field">
+            <label for="senderEmail">Reply Email</label>
+            <input id="senderEmail" name="senderEmail" type="email" maxlength="120" placeholder="you@example.com" required />
+          </div>
+
+          <div class="form-field">
+            <label for="subject">Subject</label>
+            <input id="subject" name="subject" type="text" maxlength="120" placeholder="Subject" required />
+          </div>
+
+          <div class="form-field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Write your message." required></textarea>
+          </div>
+
+          <button class="primary-btn" type="submit">Open Email App</button>
+          <p class="form-status" id="formStatus">This opens your default mail app.</p>
+        </form>
+      </div>
+
+      <div class="meta">
+        See also: <a class="link" href="privacy-en.html">Privacy Policy</a>, <a class="link" href="terms-en.html">Terms</a>, <a class="link" href="contact.html">한국어</a>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      Related pages: <a class="link" href="about-en.html">About</a> · <a class="link" href="sitemap-en.html">Sitemap</a>
+    </footer>
+  </main>
+
+  <script>
+    const SUPPORT_EMAIL = "bcm123412@gmail.com";
+
+    const contactForm = document.getElementById("contactForm");
+    const formStatus = document.getElementById("formStatus");
+
+    contactForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const senderName = document.getElementById("senderName").value.trim();
+      const senderEmail = document.getElementById("senderEmail").value.trim();
+      const subject = document.getElementById("subject").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      if (!senderEmail || !subject || !message) {
+        formStatus.textContent = "Reply email, subject, and message are required.";
+        return;
+      }
+
+      const composedSubject = `[DotPhoto Inquiry] ${subject}`;
+      const bodyLines = [
+        `Name: ${senderName || "N/A"}`,
+        `Reply Email: ${senderEmail}`,
+        "",
+        "Message:",
+        message,
+      ];
+
+      const mailto = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(composedSubject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
+      window.location.href = mailto;
+      formStatus.textContent = "Email app opened. Please review and send.";
+    });
+  </script>
+</body>
+</html>

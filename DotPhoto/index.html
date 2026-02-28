@@ -48,6 +48,14 @@
       box-shadow: 0 10px 28px rgba(68, 38, 7, 0.08);
     }
 
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
     .hero h1 {
       margin: 0;
       font-size: clamp(1.4rem, 2.5vw, 2.1rem);
@@ -58,6 +66,31 @@
       margin: 8px 0 0;
       color: var(--muted);
       font-size: 0.95rem;
+    }
+
+    .hero-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .hero-nav a {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid #debc9b;
+      background: #fff5e9;
+      color: #6b421c;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .hero-nav a:hover {
+      background: #ffedd9;
+      border-color: #d89e69;
     }
 
     .grid {
@@ -554,6 +587,42 @@
       padding: 4px 2px;
     }
 
+    .site-footer {
+      border: 1px solid var(--line);
+      background: #fff9f1;
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      color: #6c4e33;
+      font-size: 0.84rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-links a {
+      text-decoration: none;
+      color: #73461f;
+      background: #fff2df;
+      border: 1px solid #e4c7a8;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .footer-links a:hover {
+      background: #ffe8cc;
+      border-color: #d8ab7c;
+    }
+
     @media (max-width: 920px) {
       .grid {
         grid-template-columns: 1fr;
@@ -568,25 +637,44 @@
 <body>
   <main class="shell">
     <section class="hero">
-      <h1>Dot Photo Studio</h1>
-      <p>사진을 올리면 브라우저에서 바로 도트 이미지로 변환합니다. 서버 업로드 없이 로컬에서 처리됩니다.</p>
+      <div class="hero-top">
+        <div>
+          <h1>Dot Photo Studio</h1>
+          <p id="heroSubtitle">사진을 올리면 브라우저에서 바로 도트 이미지로 변환합니다. 서버 업로드 없이 로컬에서 처리됩니다.</p>
+        </div>
+        <nav class="hero-nav" aria-label="사이트 문서 링크">
+          <a id="heroLinkAbout" href="about.html">서비스 소개</a>
+          <a id="heroLinkPrivacy" href="privacy.html">개인정보처리방침</a>
+          <a id="heroLinkTerms" href="terms.html">이용약관</a>
+          <a id="heroLinkContact" href="contact.html">문의하기</a>
+          <a id="heroLinkSitemap" href="sitemap.html">사이트맵</a>
+        </nav>
+      </div>
     </section>
 
     <section class="grid">
       <aside class="panel">
-        <h2>변환 설정</h2>
+        <h2 id="settingsTitle">변환 설정</h2>
 
         <label class="dropzone" id="dropzone" for="fileInput">
           <span class="dropzone-icon" aria-hidden="true">+</span>
-          <strong>사진 파일 선택 또는 드래그</strong>
-          <span class="dropzone-help">JPG, PNG, WEBP 지원</span>
+          <strong id="dropzoneLabel">사진 파일 선택 또는 드래그</strong>
+          <span class="dropzone-help" id="dropzoneHelp">JPG, PNG, WEBP 지원</span>
         </label>
         <input id="fileInput" type="file" accept="image/*" />
 
         <div class="controls">
           <div class="field">
+            <label for="languageSelect" id="languageLabel">언어</label>
+            <select id="languageSelect">
+              <option value="ko" selected>한국어</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+
+          <div class="field">
             <label for="dotSize">
-              도트 크기
+              <span id="dotSizeLabelText">도트 크기</span>
               <span class="value-tag" id="dotSizeValue">10px</span>
             </label>
             <input id="dotSize" type="range" min="1" max="30" step="1" value="10" />
@@ -594,7 +682,7 @@
 
           <div class="field">
             <label for="colorLevels">
-              색상 단계
+              <span id="colorLevelsLabelText">색상 단계</span>
               <span class="value-tag" id="colorLevelsValue">6단계</span>
             </label>
             <input id="colorLevels" type="range" min="2" max="16" step="1" value="6" />
@@ -602,14 +690,14 @@
 
           <div class="field">
             <label for="outputWidth">
-              출력 폭
+              <span id="outputWidthLabelText">출력 폭</span>
               <span class="value-tag" id="outputWidthValue">720px</span>
             </label>
             <input id="outputWidth" type="range" min="320" max="1400" step="20" value="720" />
           </div>
 
           <div class="field">
-            <label for="dotShape">도트 모양</label>
+            <label for="dotShape" id="dotShapeLabel">도트 모양</label>
             <select id="dotShape">
               <option value="circle">원형 도트</option>
               <option value="square" selected>사각 도트</option>
@@ -618,10 +706,10 @@
 
           <div class="field">
             <div class="label-inline">
-              <label for="ditherMode">디더링</label>
+              <label for="ditherMode" id="ditherLabel">디더링</label>
               <span class="info-wrap" id="ditherInfoWrap">
                 <button class="info-btn" type="button" id="ditherInfoBtn" aria-label="디더링 옵션 설명 보기" aria-expanded="false">i</button>
-                <span class="info-tooltip" role="tooltip">
+                <span class="info-tooltip" role="tooltip" id="ditherInfoTooltip">
                   없음: 가장 빠르지만 계단 현상이 있을 수 있습니다.<br />
                   Ordered: 속도와 품질의 균형이 좋습니다.<br />
                   Floyd-Steinberg: 가장 자연스럽지만 변환이 느릴 수 있습니다.
@@ -636,10 +724,10 @@
           </div>
 
           <div class="field">
-            <label for="fastModeToggle">고속 모드</label>
+            <label for="fastModeToggle" id="fastModeLabel">고속 모드</label>
             <label class="toggle-row" for="fastModeToggle">
               <input id="fastModeToggle" type="checkbox" checked />
-              <span>저픽셀(1~2px)에서 자동 최적화</span>
+              <span id="fastModeDesc">저픽셀(1~2px)에서 자동 최적화</span>
             </label>
           </div>
         </div>
@@ -655,12 +743,12 @@
       <section class="panel result-card">
         <div>
           <div class="result-head">
-            <h2>결과 미리보기</h2>
+            <h2 id="resultTitle">결과 미리보기</h2>
             <p id="dotInfo">-</p>
           </div>
           <div class="compare-panel">
             <div class="compare-row">
-              <span>Before / After 비교</span>
+              <span id="compareLabel">Before / After 비교</span>
               <span class="value-tag" id="compareValue">100%</span>
             </div>
             <input id="compareSlider" type="range" min="0" max="100" step="1" value="100" />
@@ -672,13 +760,13 @@
             <canvas id="resultCanvas" width="720" height="480"></canvas>
             <canvas id="selectionCanvas" width="720" height="480"></canvas>
             <div class="compare-divider" id="compareDivider"></div>
-            <div class="compare-tag before">원본</div>
-            <div class="compare-tag after">도트</div>
+            <div class="compare-tag before" id="compareTagBefore">원본</div>
+            <div class="compare-tag after" id="compareTagAfter">도트</div>
           </div>
         </div>
         <div class="palette">
           <div class="palette-head">
-            <strong>도트 색상 코드</strong>
+            <strong id="paletteTitle">도트 색상 코드</strong>
             <div class="palette-meta">
               <span id="pickedColor">선택: -</span>
               <span id="paletteCount">0 colors</span>
@@ -688,9 +776,20 @@
             <div class="palette-empty">변환하면 색상 코드가 표시됩니다.</div>
           </div>
         </div>
-        <div class="meta">팁: 비교 슬라이더로 원본/도트를 나눠보고, 도트를 클릭하면 해당 색상이 팔레트에서 하이라이트됩니다.</div>
+        <div class="meta" id="tipText">팁: 비교 슬라이더로 원본/도트를 나눠보고, 도트를 클릭하면 해당 색상이 팔레트에서 하이라이트됩니다.</div>
       </section>
     </section>
+
+    <footer class="site-footer">
+      <span id="footerSummary">서비스 문서: 사이트 소개, 정책, 문의 페이지를 확인할 수 있습니다.</span>
+      <nav class="footer-links" aria-label="문서 링크">
+        <a id="footerLinkAbout" href="about.html">소개</a>
+        <a id="footerLinkPrivacy" href="privacy.html">개인정보처리방침</a>
+        <a id="footerLinkTerms" href="terms.html">이용약관</a>
+        <a id="footerLinkContact" href="contact.html">문의</a>
+        <a id="footerLinkSitemap" href="sitemap.html">사이트맵</a>
+      </nav>
+    </footer>
   </main>
 
   <script>
@@ -707,14 +806,46 @@
     const dotSize = document.getElementById("dotSize");
     const colorLevels = document.getElementById("colorLevels");
     const outputWidth = document.getElementById("outputWidth");
+    const languageSelect = document.getElementById("languageSelect");
     const dotShape = document.getElementById("dotShape");
     const ditherMode = document.getElementById("ditherMode");
     const ditherInfoWrap = document.getElementById("ditherInfoWrap");
     const ditherInfoBtn = document.getElementById("ditherInfoBtn");
+    const ditherInfoTooltip = document.getElementById("ditherInfoTooltip");
     const fastModeToggle = document.getElementById("fastModeToggle");
     const compareSlider = document.getElementById("compareSlider");
     const compareValue = document.getElementById("compareValue");
     const compareDivider = document.getElementById("compareDivider");
+
+    const heroSubtitle = document.getElementById("heroSubtitle");
+    const heroLinkAbout = document.getElementById("heroLinkAbout");
+    const heroLinkPrivacy = document.getElementById("heroLinkPrivacy");
+    const heroLinkTerms = document.getElementById("heroLinkTerms");
+    const heroLinkContact = document.getElementById("heroLinkContact");
+    const heroLinkSitemap = document.getElementById("heroLinkSitemap");
+    const settingsTitle = document.getElementById("settingsTitle");
+    const dropzoneLabel = document.getElementById("dropzoneLabel");
+    const dropzoneHelp = document.getElementById("dropzoneHelp");
+    const languageLabel = document.getElementById("languageLabel");
+    const dotSizeLabelText = document.getElementById("dotSizeLabelText");
+    const colorLevelsLabelText = document.getElementById("colorLevelsLabelText");
+    const outputWidthLabelText = document.getElementById("outputWidthLabelText");
+    const dotShapeLabel = document.getElementById("dotShapeLabel");
+    const ditherLabel = document.getElementById("ditherLabel");
+    const fastModeLabel = document.getElementById("fastModeLabel");
+    const fastModeDesc = document.getElementById("fastModeDesc");
+    const resultTitle = document.getElementById("resultTitle");
+    const compareLabel = document.getElementById("compareLabel");
+    const compareTagBefore = document.getElementById("compareTagBefore");
+    const compareTagAfter = document.getElementById("compareTagAfter");
+    const paletteTitle = document.getElementById("paletteTitle");
+    const tipText = document.getElementById("tipText");
+    const footerSummary = document.getElementById("footerSummary");
+    const footerLinkAbout = document.getElementById("footerLinkAbout");
+    const footerLinkPrivacy = document.getElementById("footerLinkPrivacy");
+    const footerLinkTerms = document.getElementById("footerLinkTerms");
+    const footerLinkContact = document.getElementById("footerLinkContact");
+    const footerLinkSitemap = document.getElementById("footerLinkSitemap");
 
     const dotSizeValue = document.getElementById("dotSizeValue");
     const colorLevelsValue = document.getElementById("colorLevelsValue");
@@ -740,7 +871,280 @@
       dotRadius: 0,
       selectedDot: null,
       renderTimer: null,
+      language: "ko",
+      paletteColorCount: 0,
     };
+
+    const I18N = {
+      ko: {
+        pageTitle: "Dot Photo Studio",
+        heroSubtitle: "사진을 올리면 브라우저에서 바로 도트 이미지로 변환합니다. 서버 업로드 없이 로컬에서 처리됩니다.",
+        heroLinkAbout: "서비스 소개",
+        heroLinkPrivacy: "개인정보처리방침",
+        heroLinkTerms: "이용약관",
+        heroLinkContact: "문의하기",
+        heroLinkSitemap: "사이트맵",
+        settingsTitle: "변환 설정",
+        dropzoneLabel: "사진 파일 선택 또는 드래그",
+        dropzoneHelp: "JPG, PNG, WEBP 지원",
+        languageLabel: "언어",
+        languageOptionKo: "한국어",
+        languageOptionEn: "English",
+        dotSizeLabel: "도트 크기",
+        colorLevelsLabel: "색상 단계",
+        colorLevelsUnit: "단계",
+        outputWidthLabel: "출력 폭",
+        dotShapeLabel: "도트 모양",
+        dotShapeCircle: "원형 도트",
+        dotShapeSquare: "사각 도트",
+        ditherLabel: "디더링",
+        ditherInfoAria: "디더링 옵션 설명 보기",
+        ditherTooltipNone: "없음: 가장 빠르지만 계단 현상이 있을 수 있습니다.",
+        ditherTooltipOrdered: "Ordered: 속도와 품질의 균형이 좋습니다.",
+        ditherTooltipFloyd: "Floyd-Steinberg: 가장 자연스럽지만 변환이 느릴 수 있습니다.",
+        ditherOptionNone: "없음 (빠름)",
+        ditherOptionOrdered: "Ordered (균형)",
+        ditherOptionFloyd: "Floyd-Steinberg (고품질)",
+        fastModeLabel: "고속 모드",
+        fastModeDesc: "저픽셀(1~2px)에서 자동 최적화",
+        convertButton: "도트 변환",
+        downloadButton: "PNG 다운로드",
+        resultTitle: "결과 미리보기",
+        compareLabel: "Before / After 비교",
+        compareTagBefore: "원본",
+        compareTagAfter: "도트",
+        paletteTitle: "도트 색상 코드",
+        pickedPrefix: "선택",
+        paletteColorsUnit: "colors",
+        paletteEmptyBefore: "변환하면 색상 코드가 표시됩니다.",
+        paletteEmptyNone: "감지된 색상이 없습니다.",
+        tipText: "팁: 비교 슬라이더로 원본/도트를 나눠보고, 도트를 클릭하면 해당 색상이 팔레트에서 하이라이트됩니다.",
+        footerSummary: "서비스 문서: 사이트 소개, 정책, 문의 페이지를 확인할 수 있습니다.",
+        footerLinkAbout: "소개",
+        footerLinkPrivacy: "개인정보처리방침",
+        footerLinkTerms: "이용약관",
+        footerLinkContact: "문의",
+        footerLinkSitemap: "사이트맵",
+        statusSelectFirst: "이미지를 먼저 선택해 주세요.",
+        statusClickAfter: "도트(After) 영역을 클릭해 주세요.",
+        statusClickCircle: "원형 도트 내부를 클릭해 주세요.",
+        statusNoColor: "해당 위치의 색상 정보를 찾을 수 없습니다.",
+        statusSelectedDot: "선택된 도트 색상: {hex}",
+        statusSelectedPalette: "선택된 팔레트 색상: {hex}",
+        statusLoadDone: "{name} 로드 완료",
+        statusImageReadError: "이미지를 읽을 수 없습니다. 다른 파일을 선택해 주세요.",
+        statusFileReadError: "파일을 읽는 중 오류가 발생했습니다.",
+        statusImageOnly: "이미지 파일만 업로드할 수 있습니다.",
+        statusComplete: "도트 변환이 완료되었습니다.",
+        statusCompleteWithNotices: "도트 변환 완료 ({notices})",
+        noticeCircleFallback: "1~2px 원형은 사각 도트로 자동 변환",
+        noticeFastPrefix: "고속 모드",
+        noticeWidthCap: "출력 폭 {width}px로 제한",
+        noticeDitherDowngrade: "디더링을 Ordered로 변경",
+        dotInfoFormat: "{cols} x {rows} dots · {dither} dither",
+        ditherNameNone: "none",
+        ditherNameOrdered: "ordered",
+        ditherNameFloyd: "floyd",
+        canvasMessageSelect: "이미지를 선택해 주세요",
+        canvasMessageInit: "이미지를 선택하면 결과가 표시됩니다",
+      },
+      en: {
+        pageTitle: "Dot Photo Studio",
+        heroSubtitle: "Upload a photo and convert it into dot art directly in your browser. Everything is processed locally without server upload.",
+        heroLinkAbout: "About",
+        heroLinkPrivacy: "Privacy Policy",
+        heroLinkTerms: "Terms",
+        heroLinkContact: "Contact",
+        heroLinkSitemap: "Sitemap",
+        settingsTitle: "Conversion Settings",
+        dropzoneLabel: "Choose a photo or drag and drop",
+        dropzoneHelp: "Supports JPG, PNG, WEBP",
+        languageLabel: "Language",
+        languageOptionKo: "Korean",
+        languageOptionEn: "English",
+        dotSizeLabel: "Dot Size",
+        colorLevelsLabel: "Color Levels",
+        colorLevelsUnit: "levels",
+        outputWidthLabel: "Output Width",
+        dotShapeLabel: "Dot Shape",
+        dotShapeCircle: "Circle Dots",
+        dotShapeSquare: "Square Dots",
+        ditherLabel: "Dithering",
+        ditherInfoAria: "Show dithering options info",
+        ditherTooltipNone: "None: fastest, but can show color banding.",
+        ditherTooltipOrdered: "Ordered: balanced speed and quality.",
+        ditherTooltipFloyd: "Floyd-Steinberg: best quality, but slower.",
+        ditherOptionNone: "None (Fast)",
+        ditherOptionOrdered: "Ordered (Balanced)",
+        ditherOptionFloyd: "Floyd-Steinberg (High Quality)",
+        fastModeLabel: "Fast Mode",
+        fastModeDesc: "Auto-optimization at low pixel size (1-2px)",
+        convertButton: "Convert to Dots",
+        downloadButton: "Download PNG",
+        resultTitle: "Preview",
+        compareLabel: "Before / After",
+        compareTagBefore: "Before",
+        compareTagAfter: "After",
+        paletteTitle: "Dot Color Codes",
+        pickedPrefix: "Selected",
+        paletteColorsUnit: "colors",
+        paletteEmptyBefore: "Color codes will appear after conversion.",
+        paletteEmptyNone: "No colors detected.",
+        tipText: "Tip: Use the compare slider to inspect before/after, then click a dot to highlight its color in the palette.",
+        footerSummary: "Site documents: overview, policies, and contact pages are available.",
+        footerLinkAbout: "About",
+        footerLinkPrivacy: "Privacy",
+        footerLinkTerms: "Terms",
+        footerLinkContact: "Contact",
+        footerLinkSitemap: "Sitemap",
+        statusSelectFirst: "Please choose an image first.",
+        statusClickAfter: "Please click in the After area.",
+        statusClickCircle: "Please click inside a circle dot.",
+        statusNoColor: "No color data found at that position.",
+        statusSelectedDot: "Selected dot color: {hex}",
+        statusSelectedPalette: "Selected palette color: {hex}",
+        statusLoadDone: "{name} loaded",
+        statusImageReadError: "Cannot read this image. Please choose another file.",
+        statusFileReadError: "An error occurred while reading the file.",
+        statusImageOnly: "Only image files can be uploaded.",
+        statusComplete: "Dot conversion completed.",
+        statusCompleteWithNotices: "Dot conversion completed ({notices})",
+        noticeCircleFallback: "Circle mode at 1-2px is auto-converted to square dots",
+        noticeFastPrefix: "Fast mode",
+        noticeWidthCap: "Output width limited to {width}px",
+        noticeDitherDowngrade: "Dithering switched to Ordered",
+        dotInfoFormat: "{cols} x {rows} dots · {dither} dithering",
+        ditherNameNone: "none",
+        ditherNameOrdered: "ordered",
+        ditherNameFloyd: "floyd",
+        canvasMessageSelect: "Please select an image",
+        canvasMessageInit: "Result will appear after you select an image",
+      },
+    };
+
+    function normalizeLanguage(language) {
+      return language === "en" ? "en" : "ko";
+    }
+
+    function getLanguageFromUrl() {
+      const language = new URLSearchParams(window.location.search).get("lang");
+      if (!language) return null;
+      return normalizeLanguage(language);
+    }
+
+    function updateLanguageQuery() {
+      const url = new URL(window.location.href);
+      if (state.language === "en") {
+        url.searchParams.set("lang", "en");
+      } else {
+        url.searchParams.delete("lang");
+      }
+      window.history.replaceState(null, "", url.toString());
+    }
+
+    function localPage(name) {
+      return state.language === "en" ? `${name}-en.html` : `${name}.html`;
+    }
+
+    function applyLocalizedDocLinks() {
+      heroLinkAbout.href = localPage("about");
+      heroLinkPrivacy.href = localPage("privacy");
+      heroLinkTerms.href = localPage("terms");
+      heroLinkContact.href = localPage("contact");
+      heroLinkSitemap.href = localPage("sitemap");
+      footerLinkAbout.href = localPage("about");
+      footerLinkPrivacy.href = localPage("privacy");
+      footerLinkTerms.href = localPage("terms");
+      footerLinkContact.href = localPage("contact");
+      footerLinkSitemap.href = localPage("sitemap");
+    }
+
+    function t(key, variables = {}) {
+      const langPack = I18N[state.language] || I18N.ko;
+      const fallback = I18N.ko[key] || key;
+      const template = langPack[key] || fallback;
+      return template.replace(/\{(\w+)\}/g, (_, token) => String(variables[token] ?? ""));
+    }
+
+    function getDitherName(mode) {
+      if (mode === "ordered") return t("ditherNameOrdered");
+      if (mode === "floyd") return t("ditherNameFloyd");
+      return t("ditherNameNone");
+    }
+
+    function setPickedColorText(hex = "-") {
+      pickedColor.textContent = `${t("pickedPrefix")}: ${hex}`;
+    }
+
+    function setPaletteCountText() {
+      paletteCount.textContent = `${state.paletteColorCount} ${t("paletteColorsUnit")}`;
+    }
+
+    function applyLanguage() {
+      document.documentElement.lang = state.language;
+      document.title = t("pageTitle");
+
+      heroSubtitle.textContent = t("heroSubtitle");
+      heroLinkAbout.textContent = t("heroLinkAbout");
+      heroLinkPrivacy.textContent = t("heroLinkPrivacy");
+      heroLinkTerms.textContent = t("heroLinkTerms");
+      heroLinkContact.textContent = t("heroLinkContact");
+      heroLinkSitemap.textContent = t("heroLinkSitemap");
+      applyLocalizedDocLinks();
+      settingsTitle.textContent = t("settingsTitle");
+      dropzoneLabel.textContent = t("dropzoneLabel");
+      dropzoneHelp.textContent = t("dropzoneHelp");
+      languageLabel.textContent = t("languageLabel");
+      dotSizeLabelText.textContent = t("dotSizeLabel");
+      colorLevelsLabelText.textContent = t("colorLevelsLabel");
+      outputWidthLabelText.textContent = t("outputWidthLabel");
+      dotShapeLabel.textContent = t("dotShapeLabel");
+      ditherLabel.textContent = t("ditherLabel");
+      fastModeLabel.textContent = t("fastModeLabel");
+      fastModeDesc.textContent = t("fastModeDesc");
+      convertButton.textContent = t("convertButton");
+      downloadButton.textContent = t("downloadButton");
+      resultTitle.textContent = t("resultTitle");
+      compareLabel.textContent = t("compareLabel");
+      compareTagBefore.textContent = t("compareTagBefore");
+      compareTagAfter.textContent = t("compareTagAfter");
+      paletteTitle.textContent = t("paletteTitle");
+      tipText.textContent = t("tipText");
+      footerSummary.textContent = t("footerSummary");
+      footerLinkAbout.textContent = t("footerLinkAbout");
+      footerLinkPrivacy.textContent = t("footerLinkPrivacy");
+      footerLinkTerms.textContent = t("footerLinkTerms");
+      footerLinkContact.textContent = t("footerLinkContact");
+      footerLinkSitemap.textContent = t("footerLinkSitemap");
+
+      const koOption = languageSelect.querySelector('option[value="ko"]');
+      const enOption = languageSelect.querySelector('option[value="en"]');
+      if (koOption) koOption.textContent = t("languageOptionKo");
+      if (enOption) enOption.textContent = t("languageOptionEn");
+
+      const shapeCircle = dotShape.querySelector('option[value="circle"]');
+      const shapeSquare = dotShape.querySelector('option[value="square"]');
+      if (shapeCircle) shapeCircle.textContent = t("dotShapeCircle");
+      if (shapeSquare) shapeSquare.textContent = t("dotShapeSquare");
+
+      const ditherNone = ditherMode.querySelector('option[value="none"]');
+      const ditherOrdered = ditherMode.querySelector('option[value="ordered"]');
+      const ditherFloyd = ditherMode.querySelector('option[value="floyd"]');
+      if (ditherNone) ditherNone.textContent = t("ditherOptionNone");
+      if (ditherOrdered) ditherOrdered.textContent = t("ditherOptionOrdered");
+      if (ditherFloyd) ditherFloyd.textContent = t("ditherOptionFloyd");
+
+      ditherInfoBtn.setAttribute("aria-label", t("ditherInfoAria"));
+      ditherInfoTooltip.innerHTML = `${t("ditherTooltipNone")}<br />${t("ditherTooltipOrdered")}<br />${t("ditherTooltipFloyd")}`;
+
+      updateControlLabels();
+      setPickedColorText(state.selectedDot ? state.selectedDot.hex : "-");
+      setPaletteCountText();
+      const emptyNode = paletteGrid.querySelector(".palette-empty");
+      if (emptyNode) {
+        emptyNode.textContent = state.image ? t("paletteEmptyNone") : t("paletteEmptyBefore");
+      }
+    }
 
     function rgbToHex(r, g, b) {
       return `#${[r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")}`.toUpperCase();
@@ -778,19 +1182,21 @@
           target.scrollIntoView({ block: "nearest", inline: "nearest" });
         }
       }
-      pickedColor.textContent = `선택: ${hex}`;
+      setPickedColorText(hex);
     }
 
-    function renderPalette(colorsWithCount) {
+    function renderPalette(colorsWithCount, options = {}) {
+      const { initial = false } = options;
       paletteGrid.innerHTML = "";
-      pickedColor.textContent = "선택: -";
+      state.paletteColorCount = colorsWithCount.length;
+      setPickedColorText("-");
+      setPaletteCountText();
 
       if (!colorsWithCount.length) {
         const empty = document.createElement("div");
         empty.className = "palette-empty";
-        empty.textContent = "감지된 색상이 없습니다.";
+        empty.textContent = initial ? t("paletteEmptyBefore") : t("paletteEmptyNone");
         paletteGrid.appendChild(empty);
-        paletteCount.textContent = "0 colors";
         return;
       }
 
@@ -811,13 +1217,11 @@
 
         paletteGrid.appendChild(item);
       });
-
-      paletteCount.textContent = `${colorsWithCount.length} colors`;
     }
 
     function updateControlLabels() {
       dotSizeValue.textContent = `${dotSize.value}px`;
-      colorLevelsValue.textContent = `${colorLevels.value}단계`;
+      colorLevelsValue.textContent = `${colorLevels.value}${t("colorLevelsUnit")}`;
       outputWidthValue.textContent = `${outputWidth.value}px`;
     }
 
@@ -994,7 +1398,7 @@
       state.dotCellSize = 0;
       state.dotRadius = 0;
       state.selectedDot = null;
-      renderPalette([]);
+      renderPalette([], { initial: !state.image });
     }
 
     function drawSelectedDotMarker() {
@@ -1048,7 +1452,7 @@
 
     function renderDotArt() {
       if (!state.image) {
-        clearCanvasWithMessage("이미지를 선택해 주세요");
+        clearCanvasWithMessage(t("canvasMessageSelect"));
         return;
       }
 
@@ -1064,13 +1468,13 @@
         const widthCap = cellSize === 1 ? 900 : 1200;
         if (targetWidth > widthCap) {
           targetWidth = widthCap;
-          fastNotes.push(`출력 폭 ${widthCap}px로 제한`);
+          fastNotes.push(t("noticeWidthCap", { width: widthCap }));
         }
       }
 
       if (fastModeToggle.checked && cellSize <= 2 && requestedDither === "floyd") {
         effectiveDither = "ordered";
-        fastNotes.push("디더링을 Ordered로 변경");
+        fastNotes.push(t("noticeDitherDowngrade"));
       }
 
       const ratio = state.image.height / state.image.width;
@@ -1164,29 +1568,33 @@
             selectPaletteByHex(selectedHex, false);
           } else {
             state.selectedDot = null;
-            pickedColor.textContent = "선택: -";
+            setPickedColorText("-");
           }
         } else {
           state.selectedDot = null;
-          pickedColor.textContent = "선택: -";
+          setPickedColorText("-");
         }
       }
 
       drawSelectedDotMarker();
 
-      dotInfo.textContent = `${cols} x ${rows} dots · ${effectiveDither} dither`;
+      dotInfo.textContent = t("dotInfoFormat", {
+        cols,
+        rows,
+        dither: getDitherName(effectiveDither),
+      });
 
       const notices = [];
       if (requestedShape === "circle" && effectiveShape === "square") {
-        notices.push("1~2px 원형은 사각 도트로 자동 변환");
+        notices.push(t("noticeCircleFallback"));
       }
       if (fastNotes.length) {
-        notices.push(`고속 모드: ${fastNotes.join(", ")}`);
+        notices.push(`${t("noticeFastPrefix")}: ${fastNotes.join(", ")}`);
       }
       if (notices.length) {
-        setStatus(`도트 변환 완료 (${notices.join(" / ")})`);
+        setStatus(t("statusCompleteWithNotices", { notices: notices.join(" / ") }));
       } else {
-        setStatus("도트 변환이 완료되었습니다.");
+        setStatus(t("statusComplete"));
       }
 
       downloadButton.disabled = false;
@@ -1212,7 +1620,7 @@
       const visiblePercent = Number(compareSlider.value) / 100;
       const relativePercent = (event.clientX - rect.left) / rect.width;
       if (relativePercent > visiblePercent) {
-        setStatus("도트(After) 영역을 클릭해 주세요.");
+        setStatus(t("statusClickAfter"));
         return;
       }
 
@@ -1231,21 +1639,21 @@
         const dx = localX - state.dotCellSize / 2;
         const dy = localY - state.dotCellSize / 2;
         if (Math.hypot(dx, dy) > state.dotRadius) {
-          setStatus("원형 도트 내부를 클릭해 주세요.");
+          setStatus(t("statusClickCircle"));
           return;
         }
       }
 
       const hex = state.dotHexGrid[row * state.dotCols + col];
       if (!hex) {
-        setStatus("해당 위치의 색상 정보를 찾을 수 없습니다.");
+        setStatus(t("statusNoColor"));
         return;
       }
 
       state.selectedDot = { col, row, hex };
       drawSelectedDotMarker();
       selectPaletteByHex(hex);
-      setStatus(`선택된 도트 색상: ${hex}`);
+      setStatus(t("statusSelectedDot", { hex }));
     }
 
     function loadImage(file) {
@@ -1256,16 +1664,16 @@
           state.image = img;
           state.fileName = baseName(file.name);
           convertButton.disabled = false;
-          setStatus(`${file.name} 로드 완료`);
+          setStatus(t("statusLoadDone", { name: file.name }));
           renderDotArt();
         };
         img.onerror = () => {
-          setStatus("이미지를 읽을 수 없습니다. 다른 파일을 선택해 주세요.");
+          setStatus(t("statusImageReadError"));
         };
         img.src = reader.result;
       };
       reader.onerror = () => {
-        setStatus("파일을 읽는 중 오류가 발생했습니다.");
+        setStatus(t("statusFileReadError"));
       };
       reader.readAsDataURL(file);
     }
@@ -1274,7 +1682,7 @@
       const [file] = fileList;
       if (!file) return;
       if (!file.type.startsWith("image/")) {
-        setStatus("이미지 파일만 업로드할 수 있습니다.");
+        setStatus(t("statusImageOnly"));
         return;
       }
       loadImage(file);
@@ -1307,7 +1715,21 @@
       const hex = target.dataset.hex;
       if (!hex) return;
       selectPaletteByHex(hex, false);
-      setStatus(`선택된 팔레트 색상: ${hex}`);
+      setStatus(t("statusSelectedPalette", { hex }));
+    });
+
+    languageSelect.addEventListener("change", () => {
+      state.language = normalizeLanguage(languageSelect.value);
+      localStorage.setItem("dotphoto-language", state.language);
+      updateLanguageQuery();
+      applyLanguage();
+      if (state.image) {
+        renderDotArt();
+      } else {
+        clearCanvasWithMessage(t("canvasMessageInit"));
+        dotInfo.textContent = "-";
+        setStatus(t("statusSelectFirst"));
+      }
     });
 
     [dotSize, colorLevels, outputWidth, dotShape, ditherMode].forEach((control) => {
@@ -1358,9 +1780,17 @@
       link.click();
     });
 
-    updateControlLabels();
+    const savedLanguage = localStorage.getItem("dotphoto-language");
+    const urlLanguage = getLanguageFromUrl();
+    const browserLanguage = (navigator.language || "ko").toLowerCase();
+    const autoLanguage = browserLanguage.startsWith("ko") ? "ko" : "en";
+    state.language = normalizeLanguage(urlLanguage || savedLanguage || autoLanguage);
+    languageSelect.value = state.language;
+    updateLanguageQuery();
+    applyLanguage();
     updateCompareMask();
-    clearCanvasWithMessage("이미지를 선택하면 결과가 표시됩니다");
+    clearCanvasWithMessage(t("canvasMessageInit"));
+    setStatus(t("statusSelectFirst"));
   </script>
 </body>
 </html>
